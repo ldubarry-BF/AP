@@ -1,0 +1,17 @@
+/sbin/iptables --flush
+/sbin/iptables --table nat --flush
+/sbin/iptables --delete-chain
+/sbin/iptables --table nat --delete-chain
+
+/sbin/iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE
+
+/sbin/iptables -A FORWARD --in-interface wlan0 -j ACCEPT
+
+/sbin/iptables -t nat -N REDSOCKS
+/sbin/iptables -t nat -A REDSOCKS -p tcp --dport 80 -j DNAT --to-destination 192.168.1.47:12345
+/sbin/iptables -t nat -A REDSOCKS -p tcp --dport 443 -j DNAT --to-destination 192.168.1.47:12345
+
+/sbin/iptables -t nat -A OUTPUT -p tcp -j REDSOCKS
+
+/sbin/iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDSOCKS
+/sbin/iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDSOCKS
