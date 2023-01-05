@@ -1,0 +1,10 @@
+/sbin/iptables --flush;
+/sbin/iptables --table nat --flush;
+/sbin/iptables --delete-chain;
+/sbin/iptables --table nat --delete-chain;
+
+#ROUTAGE SORTIE
+/sbin/iptables -A POSTROUTING -t nat -o eth0 -j MASQUERADE;
+
+#AUTORISER TRAVERSER
+/sbin/iptables -A FORWARD --in-interface wlan0 -j ACCEPT;
